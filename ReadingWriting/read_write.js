@@ -15,10 +15,12 @@ var originfile = 'loremipsum.md';
 var destinyfile = 'loremipsumcopy.md';
 
 // Writing function
+
 function writeIntoFile(text) {
     fs.writeFile(destinyfile, text, function (err) {
         if(err){
             console.log("Error al escribir en el fichero %s", destinyfile);
+            return;
         } else {
             console.log("Archivo %s creado", destinyfile);
         }
@@ -27,14 +29,20 @@ function writeIntoFile(text) {
 
 // Reading function
 function readFile(file) {
-    fs.readFile(file, function(err, data) {
-        if (err) {
-            console.log("No se ha podido leer el archivo %s", originfile);
-        } else {
-            console.log("Se ha leido el archivo %s", originfile);
-            writeIntoFile(data);
-        }
+    return new Promise(function(resolve, reject){
 
+        fs.readFile(file, 'utf8', function(err, data) {
+            if (err) {
+                reject(err);
+                console.log("No se ha podido leer el archivo %s", originfile);
+                return;
+            } else {
+                resolve (data);
+                console.log("Se ha leido el archivo %s", originfile);
+                //writeIntoFile(data);
+            }
+        });
+        
     });
 }
 
@@ -42,6 +50,7 @@ function readFile(file) {
 fs.open(originfile, 'r', function(err, fd) {
     if (err) {
         console.log('No se ha podido abrir el archivo %s', originfile);
+        return;
     } else {
         console.log('Se ha abierto el archivo %s', originfile);
         readFile(originfile);
