@@ -46,6 +46,13 @@ function readFile(file) {
     });
 }
 
+// Working with Promise for writing()
+readFile(originfile).then(function(data){
+    writeIntoFile(data);
+}).catch(function (err) {
+    console.log('ERROR', err);
+});
+
 // Open the file
 fs.open(originfile, 'r', function(err, fd) {
     if (err) {
